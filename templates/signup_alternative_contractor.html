@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternative Contractor Signup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                background: url('/static/images/acontractor.png') no-repeat center center fixed;
+                background-size: cover;
+            }
+            .container {
+                background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for readability */
+                border-radius: 8px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                margin-top: 50px;
+                max-width: 800px;
+            }
+            h2 {
+                color: #343a40;
+                font-weight: bold;
+            }
+            .form-label {
+                font-weight: 600;
+                color: #495057;
+            }
+            .btn-primary {
+                background-color: #007bff;
+                border: none;
+                transition: background-color 0.3s ease;
+            }
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+            footer {
+                margin-top: 50px;
+                text-align: center;
+                color: #6c757d;
+                font-size: 14px;
+            }
+        </style>
+        
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">Alternative Contractor Signup</h2>
+        <p class="text-muted text-center">Please fill out the form below to register as an alternative contractor.</p>
+        <form action="/signup_alternative_contractor" method="POST">
+            <!-- Basic Details -->
+            <div class="mb-4">
+                <h5>Basic Information</h5>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter a secure password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Enter your address" required>
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <select id="city" name="city" class="form-select" required>
+                        <option value="">Select City</option>
+                        {% for city in malls.keys() %}
+                            <option value="{{ city }}">{{ city }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Near To Section -->
+            <div class="mb-4">
+                <h5>Location Details</h5>
+                <div class="mb-3">
+                    <label for="near_to" class="form-label">Near to</label>
+                    <select id="near_to" name="near_to" class="form-select" required>
+                        <option value="">Select</option>
+                        <option value="mall">Mall</option>
+                        <option value="busy_street">Busy Street</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Mall-specific Fields -->
+            <div id="mall_fields" class="mb-4">
+                <h5>Mall Details</h5>
+                <div class="mb-3">
+                    <label for="mall_name" class="form-label">Mall Name</label>
+                    <select id="mall_name" name="mall_name" class="form-select">
+                        <option value="">Select Mall</option>
+                        {% for city, mall_list in malls.items() %}
+                            <optgroup label="{{ city }}">
+                                {% for mall in mall_list %}
+                                    <option value="{{ mall }}">{{ mall }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="distance_from_mall" class="form-label">Distance from Mall (in km)</label>
+                    <input type="number" step="0.01" class="form-control" id="distance_from_mall" name="distance_from_mall" placeholder="Enter distance">
+                </div>
+            </div>
+
+            <!-- Busy Street-specific Fields -->
+            <div id="street_fields" class="mb-4">
+                <h5>Busy Street Details</h5>
+                <div class="mb-3">
+                    <label for="street_name" class="form-label">Street Name</label>
+                    <select id="street_name" name="street_name" class="form-select">
+                        <option value="">Select Busy Street</option>
+                        {% for city, street_list in busy_streets.items() %}
+                            <optgroup label="{{ city }}">
+                                {% for street in street_list %}
+                                    <option value="{{ street }}">{{ street }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="distance_from_street" class="form-label">Distance from Busy Street (in km)</label>
+                    <input type="number" step="0.01" class="form-control" id="distance_from_street" name="distance_from_street" placeholder="Enter distance">
+                </div>
+            </div>
+
+            <!-- Additional Details -->
+            <div class="mb-4">
+                <h5>Additional Information</h5>
+                <div class="mb-3">
+                    <label for="number_of_lots" class="form-label">Number of Lots</label>
+                    <input type="number" class="form-control" id="number_of_lots" name="number_of_lots" placeholder="Enter number of lots" required>
+                </div>
+                <div class="mb-3">
+                    <label for="prize" class="form-label">Prize (in INR)</label>
+                    <input type="number" class="form-control" id="prize" name="prize" placeholder="Enter prize amount" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Signup</button>
+        </form>
+        <footer>
+            <p>&copy; 2024 Alternative Contractor Signup | All Rights Reserved</p>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

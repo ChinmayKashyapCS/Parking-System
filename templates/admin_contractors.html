@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Contractors</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #764776;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px 0;
+            font-size: 16px;
+            color: white;
+            background-color: #764776;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #5a3d6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Contractors Management</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="contractorsTableBody">
+                <!-- Contractor rows will be inserted here -->
+            </tbody>
+        </table>
+        <a href="admin_dashboard.html" class="button">Back to Dashboard</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/contractors')
+                .then(response => response.json())
+                .then(contractors => {
+                    const contractorsTableBody = document.getElementById('contractorsTableBody');
+                    contractors.forEach(contractor => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${contractor.username}</td>
+                            <td>${contractor.email}</td>
+                            <td>${contractor.phone}</td>
+                            <td>${contractor.address}</td>
+                            <td>
+                                <button class="button" onclick="editContractor(${contractor.id})">Edit</button>
+                                <button class="button" onclick="deleteContractor(${contractor.id})">Delete</button>
+                            </td>
+                        `;
+                        contractorsTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching contractors:', error));
+        });
+
+        function editContractor(id) {
+            // Code to edit contractor
+            console.log('Edit contractor:', id);
+        }
+
+        function deleteContractor(id) {
+            // Code to delete contractor
+            console.log('Delete contractor:', id);
+        }
+    </script>
+</body>
+</html>

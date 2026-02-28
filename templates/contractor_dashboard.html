@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        {% if contractor is none %}
+            <div class="alert alert-warning" role="alert">
+                Your contractor profile is not approved yet.
+            </div>
+        {% else %}
+            <h2>Contractor Dashboard</h2>
+            
+            <!-- Edit Profile Button (Visible only if approved) -->
+            <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                Edit Profile
+            </button>
+
+            <!-- Add Parking Slots Button -->
+            <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addParkingSlotsModal">
+                Add Parking Slots
+            </button>
+
+            <!-- Display Contractor Details -->
+            <div class="mt-4">
+                <h4>Your Profile Details</h4>
+                <p><strong>Mall Name:</strong> {{ contractor.mall_name }}</p>
+                <p><strong>City:</strong> {{ contractor.city }}</p>
+                <p><strong>Available Parking Slots:</strong> {{ contractor.number_of_lots }}</p>
+                <p><strong>Prize per Slot:</strong> ${{ contractor.prize }}</p>
+            </div>
+
+            <!-- Booking History Table -->
+            <h3 class="mt-4">Booking History</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Slot number</th>
+                        <th>Customer</th>
+                        <th>Mall Name</th>
+                        <th>City</th>
+                        <th>Slot No</th>
+                        <th>Prize</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.id }}</td>
+                            <td>{{ booking.customer.user.username }}</td>
+                            <td>{{ booking.mall_name }}</td>
+                            <td>{{ booking.city }}</td>
+                            <td>{{ booking.slot_no }}</td>
+                            <td>${{ booking.prize }}</td>
+                            <td>
+                                {% if booking.status == 'completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% else %}
+                                    <form action="{{ url_for('mark_completed', booking_id=booking.id) }}" method="POST">
+                                        <button class="btn btn-success" type="submit">Mark as Completed</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <!-- Modal to Edit Profile -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="mall_name" class="form-label">Mall Name</label>
+                            <input type="text" class="form-control" name="mall_name" value="{{ contractor.mall_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" name="city" value="{{ contractor.city }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="number_of_lots" class="form-label">Number of Parking Slots</label>
+                            <input type="number" class="form-control" name="number_of_lots" value="{{ contractor.number_of_lots }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="prize" class="form-label">Prize per Slot</label>
+                            <input type="number" class="form-control" name="prize" value="{{ contractor.prize }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="edit_profile">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal to Add Parking Slots -->
+    <div class="modal fade" id="addParkingSlotsModal" tabindex="-1" aria-labelledby="addParkingSlotsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addParkingSlotsModalLabel">Add Parking Slots</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="new_parking_slots" class="form-label">Number of Parking Slots to Add</label>
+                            <input type="number" class="form-control" name="new_parking_slots" min="1" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" name="add_parking_slots">Add Slots</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

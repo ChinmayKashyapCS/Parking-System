@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Customer Info Section -->
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Welcome, {{ customer.user.username }}</h2>
+                <!-- Edit Profile Button -->
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Details</button>
+            </div>
+            <p>Address: {{ customer.user.address }}</p>
+            <p>Email: {{ customer.user.email }}</p>
+            <p>Phone: {{ customer.user.phone }}</p>
+        </div>
+    </div>
+
+    <!-- Book Parking Section -->
+    <div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <h3>Book a Parking Slot</h3>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bookParkingModal">Book Now</button>
+        </div>
+    </div>
+
+    <!-- Modal for Parking Booking -->
+    <div class="modal fade" id="bookParkingModal" tabindex="-1" aria-labelledby="bookParkingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookParkingModalLabel">Book Your Parking Slot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" name="city" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mall_name" class="form-label">Mall Name</label>
+                            <input type="text" class="form-control" id="mall_name" name="mall_name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="street_name" class="form-label">Street Name (for Busy Street)</label>
+                            <input type="text" class="form-control" id="street_name" name="street_name">
+                        </div>
+                        <div id="prizeDisplay"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="book_parking" class="btn btn-primary">Book Slot</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" value="{{ customer.user.address }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ customer.user.email }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" value="{{ customer.user.phone }}" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="update_profile" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking History Table -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Your Booking History</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Slot Number</th>
+                        <th>City</th>
+                        <th>Mall/Street Name</th>
+                        <th>Prize</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        <td>{{ booking.city }}</td>
+                        <td>{{ booking.mall_name or booking.street_name }}</td>
+                        <td>{{ booking.prize }}</td>
+                        <td>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                <button type="submit" name="completed_booking" class="btn btn-success btn-sm">Mark as Completed</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
